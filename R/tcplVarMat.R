@@ -106,16 +106,16 @@
 #' @importFrom utils write.csv
 #' @export
 
-tcplVarMat <- function(chid = NULL,
-                       aeid = NULL,
-                       add.vars = NULL,
-                       row.id = "code",
-                       flag = TRUE,
-                       cyto.pars = list(),
-                       include.na.chid = FALSE,
-                       odir = NULL,
-                       file.prefix = NULL) {
-
+tcplVarMat<-function(chid = NULL,
+                        aeid = NULL,
+                        add.vars = NULL,
+                        row.id = "code",
+                        flag = TRUE,
+                        cyto.pars = list(),
+                        include.na.chid = FALSE,
+                        odir = NULL,
+                        file.prefix = NULL) {
+  
   ## Variable-binding to pass R CMD Check
   sc_tst <- spid <- mc_tst <- acid <- cyto_pt <- global_mad <- zscore <- hitc <- NULL
   modl_ga <- NULL
@@ -130,9 +130,9 @@ tcplVarMat <- function(chid = NULL,
   
   row.id <- row.id[1]
   if (!row.id %in% c("code", "casn", "chid", "chnm", "dsstox_substance_id")) row.id <- "code"
-
+  
   valid_var <- c(tcplListFlds("mc4"), tcplListFlds("mc5"))
-
+  
   if (!all(add.vars %in% valid_var)) stop("Invald add.vars value(s).")
   
   std.vars <- c("modl_ga", "hitc", "m4id", "zscore")
@@ -141,16 +141,16 @@ tcplVarMat <- function(chid = NULL,
   cform <- reformulate(termlabels = "aenm", response = row.id)
   
   ## Load all possibilities to create matrix dimensions
-
-  mc <- tcplQuery("SELECT DISTINCT mc5.aeid, spid FROM mc5 inner join mc4 on mc4.m4id = mc5.m4id;")
-  sc <- tcplQuery("SELECT DISTINCT aeid, spid FROM sc2;")
-
+  
+  mc <- tcplQuery("SELECT DISTINCT mc5.aeid, spid FROM mc5 inner join mc4 on mc4.m4id = mc5.m4id;", tbl=c('mc4','mc5'))
+  sc <- tcplQuery("SELECT DISTINCT aeid, spid FROM sc2;", tbl='sc2')
+  
   tst <- rbindlist(list(sc, mc))
   tst <- unique(tst)
   tst[ , sc_tst := spid %in% sc$spid]
   tst[ , mc_tst := spid %in% mc$spid]
   rm(sc, mc)
-
+  
   ## Expand acid to aeid
   aeid_info <- tcplLoadAeid("aeid", tst[ , unique(aeid)], add.fld = "acid")
   setkey(aeid_info, aeid)
@@ -202,24 +202,24 @@ tcplVarMat <- function(chid = NULL,
   setkey(dat, chid)
   
   dat <- zdst[ , list(chid, cyto_pt, global_mad)][dat]
-
+  
   dat[hitc==1 , zscore := -(modl_ga - cyto_pt)/global_mad]
   dat[hitc==0 , zscore := NA]
-
-  mat.tested <- dcast(dat, 
-                      formula = cform, 
-                      fun.aggregate = lu,
-                      value.var = "chid")
   
-  mat.sc_tst <- dcast(dat, 
-                      formula = cform, 
-                      fun.aggregate = any,
-                      value.var = "sc_tst")
+  mat.tested <- dcast.data.table(dat, 
+                                 formula = cform, 
+                                 fun.aggregate = lu,
+                                 value.var = "chid")
   
-  mat.mc_tst <- dcast(dat, 
-                      formula = cform, 
-                      fun.aggregate = any,
-                      value.var = "mc_tst")
+  mat.sc_tst <- dcast.data.table(dat, 
+                                 formula = cform, 
+                                 fun.aggregate = any,
+                                 value.var = "sc_tst")
+  
+  mat.mc_tst <- dcast.data.table(dat, 
+                                 formula = cform, 
+                                 fun.aggregate = any,
+                                 value.var = "mc_tst")
   
   rnames <- mat.tested[ , get(row.id)]
   e1 <- bquote(.(row.id) := NULL)
@@ -237,20 +237,20 @@ tcplVarMat <- function(chid = NULL,
   row.names(mat.mc_tst) <- rnames
   
   ddt <- function(x) {
-    mat <- dcast(data = dat, formula = cform, value.var = x)
+    mat <- dcast.data.table(data = dat, formula = cform, value.var = x)
     mat[ , eval(e1)]
     mat <- as.matrix(mat)
     row.names(mat) <- rnames
     mat
   }
-
+  
   mat.list <- lapply(vars, ddt)
   names(mat.list) <- vars
   
   mat.list[["tested"]] <- mat.tested
   mat.list[["tested_mc"]] <- mat.mc_tst
   mat.list[["tested_sc"]] <- mat.sc_tst
-
+  
   mat_ac <- 10^mat.list[["modl_ga"]]
   mat_ac[mat.list[["hitc"]] != 1] <- 1e6
   mat_ac[is.na(mat.list[["modl_ga"]]) & mat.list[["tested"]] == 1] <- 1e6
@@ -272,5 +272,6 @@ tcplVarMat <- function(chid = NULL,
   mat.list
   
 }
+
 
 #-------------------------------------------------------------------------------
