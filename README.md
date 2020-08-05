@@ -1,4 +1,4 @@
-### tcpl-akp: An R package for processing high-throughput chemical screening data
+### tcpl: An R package for processing high-throughput chemical screening data
 
 Edits from original package (tcpl v 2.1.0):
 
