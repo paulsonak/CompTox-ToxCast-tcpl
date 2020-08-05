@@ -1,4 +1,4 @@
-Package: tcpl-akp
+Package: tcpl
 Title: ToxCast Data Analysis Pipeline
 Version: 2.1.0
 Authors@R: c(
