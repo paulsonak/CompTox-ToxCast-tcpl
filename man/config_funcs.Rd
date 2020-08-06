@@ -13,7 +13,14 @@
 \alias{tcplConfSave}
 \title{Functions for configuring the tcpl package}
 \usage{
-tcplConf(drvr = NULL, user = NULL, pass = NULL, host = NULL, db = NULL)
+tcplConf(
+  drvr = NULL,
+  user = NULL,
+  pass = NULL,
+  host = NULL,
+  db = NULL,
+  port = NULL
+)
 
 tcplConfDefault()
 
