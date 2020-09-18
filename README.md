@@ -5,6 +5,7 @@ Edits from original package (tcpl v 2.1.0):
 1. I modified the `tcplVarMat()` function to work with tcplLite - it still kind of breaks but will give you chemical-by-assay matrices of hits and AC50s as well as matrices for whether a chemical is used in a given assay. The burst / cytotox part doesn't really work.
 2. I added a `port` option to `tcplConf()` in order to connect to a copy of invitrodb hosted elsewhere.
 3. Added `tcplLoadAcsn()` function to see a list of acsn's from `assay_component_map` table
+4. Edited plotFits to allow a pre-prepped df to be passed into the function. Thus, using the resp_unit and conc_unit columns, the user can specify the axis labels on the curve fitting plots. Kind of hack-y but works.
 
 You can install my version with the following command:
     
