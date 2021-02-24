@@ -100,9 +100,12 @@ tcplPrepOtpt <- function(dat, ids = NULL) {
             if ("chnm" %in% dnames) dat[ , chnm := NULL]
             if ("code" %in% dnames) dat[ , code := NULL]
             cmap <- suppressWarnings(tcplLoadChem("spid", dat[ , unique(spid)]))
+            cmap$spid<-as.character(cmap$spid)
             dat <- merge(cmap, dat, by = "spid", all.y = TRUE)
             #add conc units
-            dat <- merge(dat, tcplLoadConcUnit(dat[ , unique(spid)]), by = "spid", all.x = TRUE)
+            concu = tcplLoadConcUnit(dat[ , unique(spid)])
+            concu$spid<-as.character(concu$spid)
+            dat <- merge(dat, concu, by = "spid", all.x = TRUE)
         }
     }
 
