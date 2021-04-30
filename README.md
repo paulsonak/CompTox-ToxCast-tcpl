@@ -6,6 +6,7 @@ Edits from original package (tcpl v 2.1.0):
 2. I added a `port` option to `tcplConf()` in order to connect to a copy of invitrodb hosted elsewhere.
 3. Added `tcplLoadAcsn()` function to see a list of acsn's from `assay_component_map` table
 4. Edited plotFits to allow a pre-prepped df to be passed into the function. Thus, using the resp_unit and conc_unit columns, the user can specify the axis labels on the curve fitting plots. Kind of hack-y but works.
+5. added additional SC2 method, PC50
 
 You can install my version with the following command:
     
