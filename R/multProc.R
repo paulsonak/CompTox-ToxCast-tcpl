@@ -1,9 +1,10 @@
+
 #' @importFrom parallel mclapply
 
 .multProc <- function(id, lvl, type, ncores) {
 
   proc_func <- get(paste0(type, lvl))
-  mclapply(id, proc_func, mc.cores = ncores, mc.preschedule = FALSE)
+
   tmp <- mclapply(id, proc_func, mc.cores = ncores, mc.preschedule = FALSE)
   cat("Writing level", lvl, "data for", lw(sapply(tmp, "[[", 1)), "ids...\n")
 
