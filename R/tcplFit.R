@@ -82,7 +82,7 @@ tcplFit <- function(logc, resp, bmad, force.fit = FALSE, bidirectional = FALSE, 
   gnls_modl <- NULL
 
   ## Do not fit anything with less than four concentrations of data.
-  if (length(rmds) >= 4) {
+  if (length(rmds) >= 3) {
     er_est <- if ((rmad <- mad(resp)) > 0) log(rmad) else log(1e-32)
 
     ###----------------------- Fit the Constant Model -----------------------###
@@ -617,4 +617,3 @@ tcplObjHill <- function(p, lconc, resp) {
 }
 
 #-------------------------------------------------------------------------------
-
